@@ -28,10 +28,10 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary font-bold text-primary-foreground">
-            P
+          <span className="flex size-8 items-center justify-center rounded-lg brand-gradient font-bold text-background">
+            X
           </span>
-          <span className="hidden text-base font-bold tracking-tight sm:block">PredictX</span>
+          <span className="hidden text-base font-bold tracking-tight sm:block">FutureX</span>
         </Link>
 
         <nav className="ml-6 hidden items-center gap-1 lg:flex">

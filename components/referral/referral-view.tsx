@@ -21,12 +21,12 @@ const invited = [
 
 export function ReferralView() {
   const [copied, setCopied] = useState(false)
-  const code = "PREDX-WC26-7A3F"
+  const code = "FUTUREX-7A3F"
   const currentXp = 4280
   const nextTier = 6000
 
   function copy() {
-    navigator.clipboard?.writeText(`https://predictx.xyz/r/${code}`)
+    navigator.clipboard?.writeText(`https://futurex.xyz/r/${code}`)
     setCopied(true)
     setTimeout(() => setCopied(false), 1800)
   }
@@ -100,7 +100,7 @@ export function ReferralView() {
           <Share2 className="size-5 text-primary" /> 你的邀请链接
         </h2>
         <div className="flex items-center gap-2 rounded-xl bg-secondary/60 px-4 py-3">
-          <span className="num min-w-0 flex-1 truncate text-sm">predictx.xyz/r/{code}</span>
+          <span className="num min-w-0 flex-1 truncate text-sm">futurex.xyz/r/{code}</span>
           <button
             onClick={copy}
             className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground"

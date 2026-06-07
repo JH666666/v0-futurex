@@ -1,7 +1,7 @@
 {
-  "name": "PredictX — 预测未来，赢取奖励",
-  "short_name": "PredictX",
-  "description": "世界杯 2026、加密、AI、金融与热门事件的下一代预测市场",
+  "name": "FutureX — Predict the Future. Earn the Reward.",
+  "short_name": "FutureX",
+  "description": "覆盖体育、加密货币、AI 与全球大事件的下一代预测市场",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1d2e",

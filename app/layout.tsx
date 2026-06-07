@@ -11,12 +11,12 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'PredictX — 预测未来，赢取奖励',
+  title: 'FutureX — Predict the Future. Earn the Reward.',
   description:
-    '下一代预测市场，聚焦 2026 世界杯、加密货币、AI、金融与热门全球事件。预测未来，赢取奖励。',
+    '下一代预测市场，覆盖体育、加密货币、AI 与全球大事件。以优雅、沉浸的体验预测未来，赢取奖励。',
   generator: 'v0.app',
   manifest: '/manifest.json',
-  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'PredictX' },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'FutureX' },
 }
 
 export const viewport: Viewport = {

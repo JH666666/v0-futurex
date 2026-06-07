@@ -17,25 +17,28 @@ export function HomeHero() {
       <div className="relative flex flex-col gap-6 px-6 py-10 sm:px-10 sm:py-16">
         <span className="inline-flex w-fit items-center gap-2 rounded-full glass px-3 py-1.5 text-xs font-semibold">
           <Zap className="size-3.5 text-yes" />
-          FIFA 世界杯 2026 · 已开盘
+          下一代预测市场 · 现已上线
         </span>
 
-        <h1 className="max-w-2xl text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-          预测世界杯，
-          <br />
-          <span className="text-primary">用 USDC 链上结算</span>
-        </h1>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-bold uppercase tracking-[0.3em] text-muted-foreground">FutureX</span>
+          <h1 className="max-w-2xl text-balance text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
+            <span className="text-gradient">预测未来，</span>
+            <br />
+            赢取奖励
+          </h1>
+        </div>
 
         <p className="max-w-xl text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
-          基于 Base 网络的去中心化预测市场。买入 YES 或 NO，赔率由市场实时定价，结果由预言机自动结算。
+          加入新一代预测市场。在体育、加密货币、AI 与全球大事件上做出预测，享受优雅而沉浸的体验。
         </p>
 
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/world-cup"
-            className="inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-transform active:scale-95"
+            className="inline-flex h-12 items-center gap-2 rounded-full brand-gradient px-6 text-sm font-semibold text-background transition-transform active:scale-95"
           >
-            进入世界杯中心
+            探索市场
             <ArrowRight className="size-4" />
           </Link>
           <Link
@@ -52,10 +55,10 @@ export function HomeHero() {
             预言机自动结算
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <span className="flex size-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-primary-foreground">
-              B
+            <span className="flex size-4 items-center justify-center rounded-full brand-gradient text-[8px] font-bold text-background">
+              X
             </span>
-            Base 主网
+            链上透明可信
           </span>
           <span className="num">总锁仓 $42.8M</span>
         </div>
