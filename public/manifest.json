@@ -1,0 +1,12 @@
+{
+  "name": "BasePredict — 链上预测市场",
+  "short_name": "BasePredict",
+  "description": "基于 Base 网络的 USDC 预测市场",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1d2e",
+  "theme_color": "#1a1d2e",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
