@@ -11,7 +11,8 @@ const catColor: Record<string, string> = {
   crypto: "text-primary",
   ai: "text-chart-4",
   politics: "text-chart-5",
-  sports: "text-chart-2",
+  finance: "text-chart-2",
+  entertainment: "text-chart-3",
 }
 
 export function MarketCard({ market }: { market: Market }) {

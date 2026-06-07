@@ -11,12 +11,12 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'BasePredict — 世界杯 2026 链上预测市场',
+  title: 'PredictX — 预测未来，赢取奖励',
   description:
-    '基于 Base 网络的 USDC 预测市场。交易 2026 世界杯、加密货币与 AI 事件结果，体验 Polymarket 级别的链上预测体验。',
+    '下一代预测市场，聚焦 2026 世界杯、加密货币、AI、金融与热门全球事件。预测未来，赢取奖励。',
   generator: 'v0.app',
   manifest: '/manifest.json',
-  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'BasePredict' },
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'PredictX' },
 }
 
 export const viewport: Viewport = {

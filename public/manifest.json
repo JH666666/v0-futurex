@@ -1,7 +1,7 @@
 {
-  "name": "BasePredict — 链上预测市场",
-  "short_name": "BasePredict",
-  "description": "基于 Base 网络的 USDC 预测市场",
+  "name": "PredictX — 预测未来，赢取奖励",
+  "short_name": "PredictX",
+  "description": "世界杯 2026、加密、AI、金融与热门事件的下一代预测市场",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1a1d2e",

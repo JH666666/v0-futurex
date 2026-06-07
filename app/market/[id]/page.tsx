@@ -4,6 +4,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, Users, DollarSign, Droplets, Calen
 import { getMarket, markets, categoryLabels, formatUSDC } from "@/lib/data"
 import { ProbabilityChart } from "@/components/market/probability-chart"
 import { TradePanel } from "@/components/market/trade-panel"
+import { ActivityFeed } from "@/components/market/activity-feed"
 import { Comments } from "@/components/market/comments"
 
 export function generateStaticParams() {
@@ -104,6 +105,8 @@ export default async function MarketDetailPage({ params }: { params: Promise<{ i
           <div className="lg:hidden">
             <TradePanel market={market} />
           </div>
+
+          <ActivityFeed />
 
           <Comments />
         </div>

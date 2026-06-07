@@ -29,9 +29,9 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary font-bold text-primary-foreground">
-            B
+            P
           </span>
-          <span className="hidden text-base font-bold tracking-tight sm:block">BasePredict</span>
+          <span className="hidden text-base font-bold tracking-tight sm:block">PredictX</span>
         </Link>
 
         <nav className="ml-6 hidden items-center gap-1 lg:flex">

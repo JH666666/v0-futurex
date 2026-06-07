@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Copy, Check, Gift, Users, Zap, Trophy, Share2 } from "lucide-react"
+import { Copy, Check, Gift, Users, Zap, Trophy, Share2, Flame, CalendarCheck, Award, Lock } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { dailyCheckins, badges } from "@/lib/data"
 
 const seasonRewards = [
   { tier: "青铜", xp: 0, reward: "5 USDC 交易返佣", unlocked: true },
@@ -20,12 +21,12 @@ const invited = [
 
 export function ReferralView() {
   const [copied, setCopied] = useState(false)
-  const code = "BASE-WC26-7A3F"
+  const code = "PREDX-WC26-7A3F"
   const currentXp = 4280
   const nextTier = 6000
 
   function copy() {
-    navigator.clipboard?.writeText(`https://basepredict.xyz/r/${code}`)
+    navigator.clipboard?.writeText(`https://predictx.xyz/r/${code}`)
     setCopied(true)
     setTimeout(() => setCopied(false), 1800)
   }
@@ -35,6 +36,42 @@ export function ReferralView() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">邀请中心</h1>
         <p className="mt-1 text-sm text-muted-foreground">邀请好友交易，赚取 XP 与赛季奖励。</p>
+      </div>
+
+      {/* Daily check-in + streak */}
+      <div className="flex flex-col gap-4 rounded-2xl glass-strong p-5 sm:p-6">
+        <div className="flex items-center justify-between">
+          <h2 className="flex items-center gap-2 font-bold">
+            <CalendarCheck className="size-5 text-yes" /> 每日签到
+          </h2>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-no/15 px-3 py-1 text-xs font-semibold text-no">
+            <Flame className="size-3.5" /> 连续 3 天
+          </span>
+        </div>
+        <div className="grid grid-cols-7 gap-2">
+          {dailyCheckins.map((d) => (
+            <div
+              key={d.day}
+              className={cn(
+                "flex flex-col items-center gap-1 rounded-xl py-2.5 text-center",
+                d.claimed && "bg-yes/15",
+                d.today && "ring-2 ring-primary",
+                !d.claimed && !d.today && "bg-secondary/40",
+              )}
+            >
+              <span className="text-[10px] text-muted-foreground">第{d.day}天</span>
+              {d.claimed ? (
+                <Check className="size-4 text-yes" />
+              ) : (
+                <Zap className={cn("size-4", d.today ? "text-primary" : "text-muted-foreground")} />
+              )}
+              <span className="num text-[10px] font-semibold">{d.reward}</span>
+            </div>
+          ))}
+        </div>
+        <button className="h-11 rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition-transform active:scale-95">
+          领取今日 150 XP
+        </button>
       </div>
 
       {/* XP card */}
@@ -63,7 +100,7 @@ export function ReferralView() {
           <Share2 className="size-5 text-primary" /> 你的邀请链接
         </h2>
         <div className="flex items-center gap-2 rounded-xl bg-secondary/60 px-4 py-3">
-          <span className="num min-w-0 flex-1 truncate text-sm">basepredict.xyz/r/{code}</span>
+          <span className="num min-w-0 flex-1 truncate text-sm">predictx.xyz/r/{code}</span>
           <button
             onClick={copy}
             className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground"
@@ -106,6 +143,35 @@ export function ReferralView() {
                 <p className="truncate text-xs text-muted-foreground">{r.reward}</p>
               </div>
               <span className="num text-xs font-semibold text-muted-foreground">{r.xp.toLocaleString()} XP</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Achievement badges */}
+      <div className="flex flex-col gap-3 rounded-2xl glass p-5">
+        <h2 className="flex items-center gap-2 font-bold">
+          <Award className="size-5 text-chart-4" /> 成就徽章
+        </h2>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {badges.map((b) => (
+            <div
+              key={b.id}
+              className={cn(
+                "flex flex-col items-center gap-2 rounded-xl p-4 text-center",
+                b.unlocked ? "bg-chart-4/10" : "bg-secondary/40 opacity-70",
+              )}
+            >
+              <span
+                className={cn(
+                  "flex size-11 items-center justify-center rounded-full",
+                  b.unlocked ? "bg-chart-4/20 text-chart-4" : "bg-secondary text-muted-foreground",
+                )}
+              >
+                {b.unlocked ? <Award className="size-5" /> : <Lock className="size-4" />}
+              </span>
+              <p className="text-xs font-semibold">{b.name}</p>
+              <p className="text-[10px] leading-tight text-muted-foreground">{b.desc}</p>
             </div>
           ))}
         </div>

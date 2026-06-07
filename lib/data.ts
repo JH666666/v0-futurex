@@ -1,4 +1,4 @@
-export type Category = "worldcup" | "crypto" | "ai" | "politics" | "sports"
+export type Category = "worldcup" | "crypto" | "ai" | "politics" | "finance" | "entertainment"
 
 export type Market = {
   id: string
@@ -22,7 +22,17 @@ export const categoryLabels: Record<Category, string> = {
   crypto: "Crypto",
   ai: "AI",
   politics: "Politics",
-  sports: "Sports",
+  finance: "Finance",
+  entertainment: "Entertainment",
+}
+
+export const categoryMeta: Record<Category, { label: string; emoji: string }> = {
+  worldcup: { label: "世界杯", emoji: "⚽" },
+  crypto: { label: "加密货币", emoji: "₿" },
+  ai: { label: "人工智能", emoji: "🤖" },
+  politics: { label: "政治", emoji: "🏛" },
+  finance: { label: "金融", emoji: "💰" },
+  entertainment: { label: "娱乐", emoji: "🎬" },
 }
 
 function gen(seed: number, n = 24) {
@@ -184,6 +194,87 @@ export const markets: Market[] = [
     trend: gen(47),
     change24h: -2.0,
   },
+  {
+    id: "pol-us-election",
+    question: "2026 美国中期选举民主党赢得众议院？",
+    category: "politics",
+    yesPrice: 47,
+    volume: 6240000,
+    liquidity: 1380000,
+    participants: 19800,
+    endDate: "2026-11-03",
+    resolution: "AP 官方选举结果",
+    trend: gen(53),
+    change24h: 2.9,
+    featured: true,
+  },
+  {
+    id: "pol-uk-pm",
+    question: "英国首相会在 2026 年内更换吗？",
+    category: "politics",
+    yesPrice: 33,
+    volume: 1280000,
+    liquidity: 340000,
+    participants: 5240,
+    endDate: "2026-12-31",
+    resolution: "英国政府官方公告",
+    trend: gen(59),
+    change24h: -1.6,
+  },
+  {
+    id: "fin-fed-cut",
+    question: "美联储会在 Q3 前再降息一次吗？",
+    category: "finance",
+    yesPrice: 71,
+    volume: 4120000,
+    liquidity: 980000,
+    participants: 13600,
+    endDate: "2026-09-30",
+    resolution: "FOMC 官方利率决议",
+    trend: gen(61),
+    change24h: 3.4,
+    featured: true,
+  },
+  {
+    id: "fin-sp500-7000",
+    question: "标普 500 会在 2026 年底突破 7000 点？",
+    category: "finance",
+    yesPrice: 42,
+    volume: 2980000,
+    liquidity: 720000,
+    participants: 10240,
+    endDate: "2026-12-31",
+    resolution: "S&P 官方收盘指数",
+    trend: gen(67),
+    change24h: 1.2,
+  },
+  {
+    id: "ent-oscar-bestpic",
+    question: "下届奥斯卡最佳影片会是科幻片吗？",
+    category: "entertainment",
+    yesPrice: 18,
+    volume: 760000,
+    liquidity: 180000,
+    participants: 3120,
+    endDate: "2026-03-15",
+    resolution: "奥斯卡官方颁奖结果",
+    trend: gen(71),
+    change24h: 0.8,
+  },
+  {
+    id: "ent-gta6",
+    question: "GTA 6 会在 2026 年内正式发售吗？",
+    category: "entertainment",
+    yesPrice: 56,
+    volume: 3410000,
+    liquidity: 640000,
+    participants: 14200,
+    endDate: "2026-12-31",
+    resolution: "Rockstar 官方发售公告",
+    trend: gen(73),
+    change24h: 4.1,
+    featured: true,
+  },
 ]
 
 export function getMarket(id: string) {
@@ -233,4 +324,56 @@ export const closedPositions = [
   { id: "c1", market: "阿根廷夺得美洲杯？", side: "YES" as const, shares: 600, entry: 44, exit: 100, pnl: 336 },
   { id: "c2", market: "以太坊现货 ETF 通过？", side: "YES" as const, shares: 1000, entry: 61, exit: 100, pnl: 390 },
   { id: "c3", market: "梅西转会 MLS？", side: "NO" as const, shares: 450, entry: 38, exit: 0, pnl: -171 },
+]
+
+export type Activity = {
+  id: string
+  user: string
+  action: "buy" | "sell"
+  side: "YES" | "NO"
+  amount: number
+  price: number
+  time: string
+}
+
+export const activityFeed: Activity[] = [
+  { id: "a1", user: "0x7f…3ad", action: "buy", side: "YES", amount: 1200, price: 23, time: "12 秒前" },
+  { id: "a2", user: "whale.base", action: "buy", side: "NO", amount: 4800, price: 77, time: "44 秒前" },
+  { id: "a3", user: "0x2c…91b", action: "sell", side: "YES", amount: 600, price: 24, time: "1 分钟前" },
+  { id: "a4", user: "degen.base", action: "buy", side: "YES", amount: 320, price: 22, time: "2 分钟前" },
+  { id: "a5", user: "0x9a…f02", action: "buy", side: "NO", amount: 1500, price: 78, time: "3 分钟前" },
+  { id: "a6", user: "alpha.base", action: "sell", side: "NO", amount: 980, price: 76, time: "5 分钟前" },
+]
+
+export const dailyCheckins = [
+  { day: 1, reward: 50, claimed: true },
+  { day: 2, reward: 75, claimed: true },
+  { day: 3, reward: 100, claimed: true },
+  { day: 4, reward: 150, claimed: false, today: true },
+  { day: 5, reward: 200, claimed: false },
+  { day: 6, reward: 300, claimed: false },
+  { day: 7, reward: 500, claimed: false },
+]
+
+export type Badge = {
+  id: string
+  name: string
+  desc: string
+  unlocked: boolean
+}
+
+export const badges: Badge[] = [
+  { id: "b1", name: "首单预测", desc: "完成第一笔预测交易", unlocked: true },
+  { id: "b2", name: "连胜大师", desc: "连续 5 次预测正确", unlocked: true },
+  { id: "b3", name: "巨鲸玩家", desc: "单笔交易超过 $1,000", unlocked: true },
+  { id: "b4", name: "世界杯专家", desc: "在 10 个世界杯市场盈利", unlocked: false },
+  { id: "b5", name: "市场创造者", desc: "创建首个被验证的市场", unlocked: false },
+  { id: "b6", name: "钻石之手", desc: "持有头寸至结算超过 30 天", unlocked: false },
+]
+
+export const referrals = [
+  { name: "0x4d…8c1", joined: "3 天前", earned: 120, status: "活跃" as const },
+  { name: "soccer.base", joined: "1 周前", earned: 340, status: "活跃" as const },
+  { name: "0xab…77e", joined: "2 周前", earned: 80, status: "待激活" as const },
+  { name: "trader.base", joined: "3 周前", earned: 510, status: "活跃" as const },
 ]
