@@ -1,9 +1,19 @@
 export type Category = "worldcup" | "crypto" | "ai" | "politics" | "finance" | "entertainment"
 
+export type Chain = "base" | "bsc"
+
+export const chainMeta: Record<Chain, { label: string; short: string; symbol: string; token: string; color: string; dot: string }> = {
+  base: { label: "Base", short: "Base", symbol: "B", token: "USDC", color: "text-primary", dot: "bg-primary" },
+  bsc: { label: "BNB Smart Chain", short: "BNB Chain", symbol: "B", token: "USDT", color: "text-chart-4", dot: "bg-chart-4" },
+}
+
+export const chainOrder: Chain[] = ["base", "bsc"]
+
 export type Market = {
   id: string
   question: string
   category: Category
+  chain: Chain
   yesPrice: number // cents 1-99
   volume: number // USDC
   liquidity: number
@@ -51,6 +61,7 @@ export const markets: Market[] = [
     id: "wc-winner-brazil",
     question: "巴西会赢得 2026 世界杯冠军吗？",
     category: "worldcup",
+    chain: "base",
     yesPrice: 23,
     volume: 4820000,
     liquidity: 920000,
@@ -62,9 +73,25 @@ export const markets: Market[] = [
     featured: true,
   },
   {
+    id: "wc-winner-france",
+    question: "法国会赢得 2026 世界杯冠军吗？",
+    category: "worldcup",
+    chain: "bsc",
+    yesPrice: 21,
+    volume: 5240000,
+    liquidity: 1020000,
+    participants: 14120,
+    endDate: "2026-07-19",
+    resolution: "FIFA 官方赛果",
+    trend: gen(5),
+    change24h: 1.9,
+    featured: true,
+  },
+  {
     id: "wc-winner-argentina",
     question: "阿根廷会卫冕 2026 世界杯吗？",
     category: "worldcup",
+    chain: "base",
     yesPrice: 19,
     volume: 5610000,
     liquidity: 1100000,
@@ -76,9 +103,24 @@ export const markets: Market[] = [
     featured: true,
   },
   {
+    id: "wc-brazil-semi",
+    question: "巴西能进入 2026 世界杯半决赛吗？",
+    category: "worldcup",
+    chain: "bsc",
+    yesPrice: 44,
+    volume: 2360000,
+    liquidity: 580000,
+    participants: 9240,
+    endDate: "2026-07-14",
+    resolution: "FIFA 官方赛果",
+    trend: gen(9),
+    change24h: 3.3,
+  },
+  {
     id: "wc-host-usa-semi",
     question: "美国队能进入半决赛吗？",
     category: "worldcup",
+    chain: "base",
     yesPrice: 31,
     volume: 2140000,
     liquidity: 540000,
@@ -89,9 +131,24 @@ export const markets: Market[] = [
     change24h: 4.8,
   },
   {
+    id: "wc-england-final",
+    question: "英格兰能闯入 2026 世界杯决赛吗？",
+    category: "worldcup",
+    chain: "bsc",
+    yesPrice: 26,
+    volume: 1840000,
+    liquidity: 460000,
+    participants: 7620,
+    endDate: "2026-07-19",
+    resolution: "FIFA 官方赛果",
+    trend: gen(13),
+    change24h: -2.1,
+  },
+  {
     id: "wc-topscorer-mbappe",
     question: "姆巴佩会成为本届世界杯金靴吗？",
     category: "worldcup",
+    chain: "base",
     yesPrice: 14,
     volume: 1680000,
     liquidity: 380000,
@@ -102,9 +159,24 @@ export const markets: Market[] = [
     change24h: 1.7,
   },
   {
+    id: "wc-most-goals-nation",
+    question: "巴西会是本届世界杯进球最多的球队吗？",
+    category: "worldcup",
+    chain: "bsc",
+    yesPrice: 22,
+    volume: 1240000,
+    liquidity: 310000,
+    participants: 5180,
+    endDate: "2026-07-19",
+    resolution: "FIFA 官方进球统计",
+    trend: gen(19),
+    change24h: 2.0,
+  },
+  {
     id: "wc-match-bra-fra",
     question: "巴西 vs 法国 揭幕战 — 巴西获胜？",
     category: "worldcup",
+    chain: "base",
     yesPrice: 46,
     volume: 980000,
     liquidity: 260000,
@@ -118,6 +190,7 @@ export const markets: Market[] = [
     id: "crypto-btc-150k",
     question: "比特币在 2026 年底前突破 $150,000？",
     category: "crypto",
+    chain: "bsc",
     yesPrice: 38,
     volume: 8920000,
     liquidity: 2400000,
@@ -132,6 +205,7 @@ export const markets: Market[] = [
     id: "crypto-eth-flip",
     question: "ETH 市值会在 2026 翻转 BTC 吗？",
     category: "crypto",
+    chain: "base",
     yesPrice: 8,
     volume: 3210000,
     liquidity: 760000,
@@ -142,9 +216,24 @@ export const markets: Market[] = [
     change24h: -0.9,
   },
   {
+    id: "crypto-bnb-1000",
+    question: "BNB 会在 2026 年底前突破 $1,000？",
+    category: "crypto",
+    chain: "bsc",
+    yesPrice: 33,
+    volume: 2680000,
+    liquidity: 690000,
+    participants: 8920,
+    endDate: "2026-12-31",
+    resolution: "Binance BNB/USDT 现货价",
+    trend: gen(33),
+    change24h: 4.4,
+  },
+  {
     id: "crypto-base-tvl",
     question: "Base 链 TVL 会超过 $50B 吗？",
     category: "crypto",
+    chain: "base",
     yesPrice: 27,
     volume: 1920000,
     liquidity: 510000,
@@ -158,6 +247,7 @@ export const markets: Market[] = [
     id: "ai-agi-2026",
     question: "2026 年内会出现公认的 AGI 突破吗？",
     category: "ai",
+    chain: "base",
     yesPrice: 12,
     volume: 2740000,
     liquidity: 640000,
@@ -172,6 +262,7 @@ export const markets: Market[] = [
     id: "ai-gpt6",
     question: "OpenAI 会在 Q3 前发布新一代旗舰模型？",
     category: "ai",
+    chain: "bsc",
     yesPrice: 58,
     volume: 1450000,
     liquidity: 320000,
@@ -185,6 +276,7 @@ export const markets: Market[] = [
     id: "ai-model-cost",
     question: "前沿模型推理成本会再降 50% 吗？",
     category: "ai",
+    chain: "base",
     yesPrice: 64,
     volume: 890000,
     liquidity: 210000,
@@ -198,6 +290,7 @@ export const markets: Market[] = [
     id: "pol-us-election",
     question: "2026 美国中期选举民主党赢得众议院？",
     category: "politics",
+    chain: "base",
     yesPrice: 47,
     volume: 6240000,
     liquidity: 1380000,
@@ -212,6 +305,7 @@ export const markets: Market[] = [
     id: "pol-uk-pm",
     question: "英国首相会在 2026 年内更换吗？",
     category: "politics",
+    chain: "bsc",
     yesPrice: 33,
     volume: 1280000,
     liquidity: 340000,
@@ -225,6 +319,7 @@ export const markets: Market[] = [
     id: "fin-fed-cut",
     question: "美联储会在 Q3 前再降息一次吗？",
     category: "finance",
+    chain: "bsc",
     yesPrice: 71,
     volume: 4120000,
     liquidity: 980000,
@@ -239,6 +334,7 @@ export const markets: Market[] = [
     id: "fin-sp500-7000",
     question: "标普 500 会在 2026 年底突破 7000 点？",
     category: "finance",
+    chain: "base",
     yesPrice: 42,
     volume: 2980000,
     liquidity: 720000,
@@ -252,6 +348,7 @@ export const markets: Market[] = [
     id: "ent-oscar-bestpic",
     question: "下届奥斯卡最佳影片会是科幻片吗？",
     category: "entertainment",
+    chain: "base",
     yesPrice: 18,
     volume: 760000,
     liquidity: 180000,
@@ -265,6 +362,7 @@ export const markets: Market[] = [
     id: "ent-gta6",
     question: "GTA 6 会在 2026 年内正式发售吗？",
     category: "entertainment",
+    chain: "bsc",
     yesPrice: 56,
     volume: 3410000,
     liquidity: 640000,
@@ -314,16 +412,16 @@ export const leaders = [
 ]
 
 export const positions = [
-  { id: "p1", market: "巴西会赢得 2026 世界杯冠军吗？", side: "YES" as const, shares: 1200, avg: 19, current: 23, value: 276 },
-  { id: "p2", market: "比特币突破 $150,000？", side: "YES" as const, shares: 800, avg: 31, current: 38, value: 304 },
-  { id: "p3", market: "美国队能进入半决赛吗？", side: "NO" as const, shares: 540, avg: 72, current: 69, value: 372.6 },
-  { id: "p4", market: "ETH 翻转 BTC？", side: "NO" as const, shares: 2000, avg: 89, current: 92, value: 1840 },
+  { id: "p1", chain: "base" as Chain, market: "巴西会赢得 2026 世界杯冠军吗？", side: "YES" as const, shares: 1200, avg: 19, current: 23, value: 276 },
+  { id: "p2", chain: "bsc" as Chain, market: "比特币突破 $150,000？", side: "YES" as const, shares: 800, avg: 31, current: 38, value: 304 },
+  { id: "p3", chain: "base" as Chain, market: "美国队能进入半决赛吗？", side: "NO" as const, shares: 540, avg: 72, current: 69, value: 372.6 },
+  { id: "p4", chain: "bsc" as Chain, market: "法国会赢得 2026 世界杯冠军吗？", side: "YES" as const, shares: 900, avg: 18, current: 21, value: 189 },
 ]
 
 export const closedPositions = [
-  { id: "c1", market: "阿根廷夺得美洲杯？", side: "YES" as const, shares: 600, entry: 44, exit: 100, pnl: 336 },
-  { id: "c2", market: "以太坊现货 ETF 通过？", side: "YES" as const, shares: 1000, entry: 61, exit: 100, pnl: 390 },
-  { id: "c3", market: "梅西转会 MLS？", side: "NO" as const, shares: 450, entry: 38, exit: 0, pnl: -171 },
+  { id: "c1", chain: "base" as Chain, market: "阿根廷夺得美洲杯？", side: "YES" as const, shares: 600, entry: 44, exit: 100, pnl: 336 },
+  { id: "c2", chain: "bsc" as Chain, market: "以太坊现货 ETF 通过？", side: "YES" as const, shares: 1000, entry: 61, exit: 100, pnl: 390 },
+  { id: "c3", chain: "base" as Chain, market: "梅西转会 MLS？", side: "NO" as const, shares: 450, entry: 38, exit: 0, pnl: -171 },
 ]
 
 export type Activity = {

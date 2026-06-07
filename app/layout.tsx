@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { SiteHeader, MobileNav } from '@/components/site-nav'
+import { ChainProvider } from '@/components/chain-provider'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({
@@ -35,9 +36,11 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" className={`dark ${geistSans.variable} ${geistMono.variable} bg-background`}>
       <body className="font-sans antialiased">
-        <SiteHeader />
-        <main className="min-h-screen pb-24 lg:pb-0">{children}</main>
-        <MobileNav />
+        <ChainProvider>
+          <SiteHeader />
+          <main className="min-h-screen pb-24 lg:pb-0">{children}</main>
+          <MobileNav />
+        </ChainProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
