@@ -6,6 +6,7 @@ import { Home, Trophy, Plus, Wallet2, Crown } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { WalletConnect } from "@/components/wallet-connect"
 import { ChainSwitcher } from "@/components/chain-switcher"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const links = [
   { href: "/", label: "首页", icon: Home },
@@ -60,6 +61,7 @@ export function SiteHeader() {
           >
             <Plus className="size-4" /> 创建预测
           </Link>
+          <ThemeToggle />
           <ChainSwitcher />
           <WalletConnect />
         </div>

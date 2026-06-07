@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { SiteHeader, MobileNav } from '@/components/site-nav'
 import { ChainProvider } from '@/components/chain-provider'
+import { ThemeProvider } from '@/components/theme-provider'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({
@@ -34,13 +35,22 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" className={`dark ${geistSans.variable} ${geistMono.variable} bg-background`}>
+    <html lang="zh-CN" className={`dark ${geistSans.variable} ${geistMono.variable} bg-background`} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('futurex-theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}var d=document.documentElement;d.classList.toggle('dark',t==='dark');d.style.colorScheme=t;}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased">
-        <ChainProvider>
-          <SiteHeader />
-          <main className="min-h-screen pb-24 lg:pb-0">{children}</main>
-          <MobileNav />
-        </ChainProvider>
+        <ThemeProvider>
+          <ChainProvider>
+            <SiteHeader />
+            <main className="min-h-screen pb-24 lg:pb-0">{children}</main>
+            <MobileNav />
+          </ChainProvider>
+        </ThemeProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
