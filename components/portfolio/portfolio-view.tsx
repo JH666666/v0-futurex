@@ -4,6 +4,7 @@ import { useState } from "react"
 import { TrendingUp, Target, Percent, Wallet } from "lucide-react"
 import { positions, closedPositions } from "@/lib/data"
 import { Sparkline } from "@/components/sparkline"
+import { ChainBadge } from "@/components/chain-badge"
 import { cn } from "@/lib/utils"
 
 const equityTrend = [1200, 1280, 1240, 1390, 1450, 1420, 1580, 1640, 1720, 1690, 1810, 1920]
@@ -82,7 +83,10 @@ export function PortfolioView() {
               return (
                 <div key={p.id} className="flex flex-col gap-3 rounded-2xl glass p-4">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-pretty text-sm font-semibold leading-snug">{p.market}</p>
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-pretty text-sm font-semibold leading-snug">{p.market}</p>
+                      <ChainBadge chain={p.chain} />
+                    </div>
                     <span
                       className={cn(
                         "shrink-0 rounded-full px-2.5 py-1 text-xs font-bold",
@@ -106,7 +110,10 @@ export function PortfolioView() {
               return (
                 <div key={p.id} className="flex flex-col gap-3 rounded-2xl glass p-4">
                   <div className="flex items-start justify-between gap-3">
-                    <p className="text-pretty text-sm font-semibold leading-snug">{p.market}</p>
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-pretty text-sm font-semibold leading-snug">{p.market}</p>
+                      <ChainBadge chain={p.chain} />
+                    </div>
                     <span
                       className={cn(
                         "shrink-0 rounded-full px-2.5 py-1 text-xs font-bold",

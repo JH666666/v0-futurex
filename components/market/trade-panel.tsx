@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Wallet, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { Market } from "@/lib/data"
+import { chainMeta, type Market } from "@/lib/data"
 
 export function TradePanel({ market }: { market: Market }) {
   const [side, setSide] = useState<"YES" | "NO">("YES")
@@ -13,6 +13,7 @@ export function TradePanel({ market }: { market: Market }) {
   const payout = shares * 1
   const profit = payout - amount
   const presets = [10, 50, 100, 500]
+  const chain = chainMeta[market.chain]
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl glass-strong p-5">
@@ -41,7 +42,7 @@ export function TradePanel({ market }: { market: Market }) {
         <div className="mb-2 flex items-center justify-between">
           <label className="text-sm font-medium text-muted-foreground">投入金额</label>
           <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
-            <Wallet className="size-3" /> 余额 2,480 USDC
+            <Wallet className="size-3" /> 余额 2,480 {chain.token}
           </span>
         </div>
         <div className="flex items-center gap-2 rounded-xl bg-secondary/60 px-4 py-3">
@@ -53,7 +54,7 @@ export function TradePanel({ market }: { market: Market }) {
             onChange={(e) => setAmount(Math.max(0, Number(e.target.value)))}
             className="num w-full bg-transparent text-2xl font-bold outline-none"
           />
-          <span className="text-sm font-semibold text-muted-foreground">USDC</span>
+          <span className="text-sm font-semibold text-muted-foreground">{chain.token}</span>
         </div>
         <div className="mt-2 grid grid-cols-4 gap-2">
           {presets.map((p) => (
@@ -86,7 +87,7 @@ export function TradePanel({ market }: { market: Market }) {
 
       <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
         <Info className="mt-0.5 size-3.5 shrink-0" />
-        交易在 Base 网络以 USDC 结算，由预言机自动裁定，无需信任中介。
+        交易在 {chain.label} 网络以 {chain.token} 结算，由预言机自动裁定，无需信任中介。
       </p>
     </div>
   )

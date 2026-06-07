@@ -5,6 +5,7 @@ import { getMarket, markets, categoryLabels, formatUSDC } from "@/lib/data"
 import { ProbabilityChart } from "@/components/market/probability-chart"
 import { TradePanel } from "@/components/market/trade-panel"
 import { ActivityFeed } from "@/components/market/activity-feed"
+import { ChainBadge } from "@/components/chain-badge"
 import { Comments } from "@/components/market/comments"
 
 export function generateStaticParams() {
@@ -34,10 +35,11 @@ export default async function MarketDetailPage({ params }: { params: Promise<{ i
         <div className="flex flex-col gap-6">
           {/* Header */}
           <div className="flex flex-col gap-4 rounded-2xl glass p-5 sm:p-6">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
                 {categoryLabels[market.category]}
               </span>
+              <ChainBadge chain={market.chain} />
               <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 <ShieldCheck className="size-3.5 text-yes" /> 预言机结算
               </span>

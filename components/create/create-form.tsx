@@ -1,25 +1,30 @@
 "use client"
 
 import { useState } from "react"
-import { Trophy, Coins, Cpu, Vote, Check } from "lucide-react"
+import { Trophy, Coins, Cpu, Vote, DollarSign, Clapperboard, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { chainOrder, chainMeta, type Chain } from "@/lib/data"
 
 const cats = [
   { id: "worldcup", label: "世界杯", icon: Trophy },
   { id: "crypto", label: "加密货币", icon: Coins },
   { id: "ai", label: "AI", icon: Cpu },
   { id: "politics", label: "政治", icon: Vote },
+  { id: "finance", label: "金融", icon: DollarSign },
+  { id: "entertainment", label: "娱乐", icon: Clapperboard },
 ]
 
 const oracles = ["FIFA 官方赛果", "Coinbase 价格预言机", "Chainlink 数据源", "UMA 乐观预言机", "自定义来源"]
 
 export function CreateForm() {
   const [cat, setCat] = useState("worldcup")
+  const [chain, setChain] = useState<Chain>("base")
   const [title, setTitle] = useState("")
   const [desc, setDesc] = useState("")
   const [date, setDate] = useState("")
   const [oracle, setOracle] = useState(oracles[0])
   const [done, setDone] = useState(false)
+  const chainInfo = chainMeta[chain]
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6 sm:py-8">
@@ -34,7 +39,7 @@ export function CreateForm() {
             <Check className="size-8 text-yes" />
           </span>
           <h2 className="text-xl font-bold">市场创建成功</h2>
-          <p className="text-sm text-muted-foreground">你的预测市场已提交至 Base 网络，正在等待确认。</p>
+          <p className="text-sm text-muted-foreground">你的预测市场已提交至 {chainInfo.label} 网络，正在等待确认。</p>
           <button onClick={() => setDone(false)} className="h-11 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground">
             再创建一个
           </button>
@@ -89,6 +94,35 @@ export function CreateForm() {
             </div>
           </Field>
 
+          <Field label="结算网络" hint="选择市场部署的区块链">
+            <div className="grid grid-cols-2 gap-2">
+              {chainOrder.map((c) => {
+                const m = chainMeta[c]
+                const active = chain === c
+                return (
+                  <button
+                    key={c}
+                    type="button"
+                    onClick={() => setChain(c)}
+                    className={cn(
+                      "flex h-16 items-center justify-between rounded-xl px-4 text-sm font-semibold transition-colors",
+                      active ? "bg-primary/15 ring-1 ring-primary" : "bg-secondary/60",
+                    )}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className={cn("size-2.5 rounded-full", m.dot)} aria-hidden />
+                      <span className="flex flex-col items-start">
+                        <span className={cn(active && m.color)}>{m.short}</span>
+                        <span className="text-xs font-normal text-muted-foreground">以 {m.token} 结算</span>
+                      </span>
+                    </span>
+                    {active && <Check className="size-4 text-primary" />}
+                  </button>
+                )
+              })}
+            </div>
+          </Field>
+
           <Field label="截止日期">
             <input
               required
@@ -122,7 +156,7 @@ export function CreateForm() {
             type="submit"
             className="h-13 rounded-xl bg-primary text-base font-bold text-primary-foreground transition-transform active:scale-[0.98]"
           >
-            部署市场 · 需 5 USDC
+            部署市场 · 需 5 {chainInfo.token}
           </button>
         </form>
       )}

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { TrendingUp, TrendingDown, Users } from "lucide-react"
 import { type Market, categoryLabels, formatUSDC } from "@/lib/data"
 import { Sparkline } from "@/components/sparkline"
+import { ChainBadge } from "@/components/chain-badge"
 import { cn } from "@/lib/utils"
 
 const catColor: Record<string, string> = {
@@ -23,9 +24,12 @@ export function MarketCard({ market }: { market: Market }) {
       className="group flex flex-col gap-4 rounded-2xl glass p-4 transition-all hover:border-primary/40 hover:bg-card/70"
     >
       <div className="flex items-start justify-between gap-3">
-        <span className={cn("text-xs font-semibold uppercase tracking-wide", catColor[market.category])}>
-          {categoryLabels[market.category]}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={cn("text-xs font-semibold uppercase tracking-wide", catColor[market.category])}>
+            {categoryLabels[market.category]}
+          </span>
+          <ChainBadge chain={market.chain} />
+        </div>
         <span
           className={cn(
             "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold num",
