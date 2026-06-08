@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "./lib/db.js"
 import { MOCK_MODE } from "../lib/config.js"
 import { mockMarkets, mockOrders, mockUsers } from "../lib/mock-data.js"
 
-const prisma = new PrismaClient()
 
 export async function getDashboardStats() {
   if (MOCK_MODE) {

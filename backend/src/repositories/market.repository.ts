@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "../lib/db.js"
 
-const prisma = new PrismaClient()
 
 export const marketRepo = {
   async findAll(params?: { category?: string; chain?: string; status?: string; search?: string; page?: number; perPage?: number }) {

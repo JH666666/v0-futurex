@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client"
-const prisma = new PrismaClient()
+import { prisma } from "../lib/db.js"
 
 export const settlementRepo = {
   async findAll() { return prisma.settlement.findMany({ orderBy: { settledAt: "desc" } }) },

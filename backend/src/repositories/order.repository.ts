@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "../lib/db.js"
 
-const prisma = new PrismaClient()
 
 export const orderRepo = {
   async create(data: {

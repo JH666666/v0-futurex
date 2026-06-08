@@ -2,9 +2,8 @@
  * User Repository — Real Mode 数据库操作
  */
 
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "../lib/db.js"
 
-const prisma = new PrismaClient()
 
 export const userRepo = {
   async findByWallet(walletAddress: string) {
@@ -35,7 +34,13 @@ export const userRepo = {
   async findAll(params?: { search?: string; status?: string; riskLevel?: string }) {
     const where: any = {}
     if (params?.status) where.status = params.status
-    return prisma.user.findMany({ where, orderBy: { createdAt: "desc" } })
+    try {
+      const result = await prisma.user.findMany({ where, orderBy: { createdAt: "desc" } })
+      return result
+    } catch(e: any) {
+      console.error("userRepo.findAll error:", e.message)
+      return []
+    }
   },
 
   async updateKyc(id: string, status: string) {

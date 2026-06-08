@@ -1,8 +1,7 @@
 import { MOCK_MODE } from "../lib/config.js"
 import { mockOrders, mockWithdrawals, mockCommissions, mockTreasuryRecords, mockUsers } from "../lib/mock-data.js"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "./lib/db.js"
 
-const prisma = new PrismaClient()
 
 export async function getFinanceOverview() {
   if (MOCK_MODE) {
