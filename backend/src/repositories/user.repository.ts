@@ -36,9 +36,10 @@ export const userRepo = {
     if (params?.status) where.status = params.status
     try {
       const result = await prisma.user.findMany({ where, orderBy: { createdAt: "desc" } })
+      console.log("userRepo.findAll: found", result.length, "users")
       return result
     } catch(e: any) {
-      console.error("userRepo.findAll error:", e.message)
+      console.error("userRepo.findAll error:", e.message, e.stack)
       return []
     }
   },
