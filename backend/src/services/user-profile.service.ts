@@ -9,9 +9,11 @@ export async function getUserFullProfile(userId: string) {
     if (!u) return null
     return { ...u, levelInfo: LEVEL_CONFIG.find((l:any)=>l.level===u.level) }
   }
-  const u = await userRepo.findById(userId)
-  if (!u) return null
-  return { ...u, levelInfo: LEVEL_CONFIG.find((l:any)=>l.level===u.level) }
+  try {
+    const u = await userRepo.findById(userId)
+    if (!u) return null
+    return { ...u, levelInfo: LEVEL_CONFIG.find((l:any)=>l.level===u.level) }
+  } catch { return null }
 }
 
 export async function getUserActivityLogs(userId: string, type?: string, limit=20) {
