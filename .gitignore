@@ -22,3 +22,4 @@ backend/.env
 
 # supabase
 supabase/.temp
+.vercel
