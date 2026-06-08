@@ -25,6 +25,7 @@ import { withdraw } from "./routes/withdraw.js"
 import { referral } from "./routes/referral.js"
 import { finance } from "./routes/finance.js"
 import { profile } from "./routes/profile.js"
+import { getDashboardStats } from "./services/dashboard.service.js"
 
 const app = new Hono()
 
@@ -46,6 +47,11 @@ app.route("/api/withdraw", withdraw)
 app.route("/api/referrals", referral)
 app.route("/api/finance", finance)
 app.route("/api", profile)
+
+app.get("/api/admin/dashboard", async (c) => {
+  const stats = await getDashboardStats()
+  return c.json({ success: true, data: stats })
+})
 
 app.notFound((c) => c.json({ success: false, message: "Not Found" }, 404))
 app.onError((err, c) => {

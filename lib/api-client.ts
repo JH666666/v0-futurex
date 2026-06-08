@@ -214,6 +214,10 @@ export async function getHealth() {
 
 // ─── User Profile ───────────────────────────────────────
 
+export async function getDashboardStats() {
+  return request<any>("GET", "/admin/dashboard")
+}
+
 export async function getUserFullProfile() {
   return request<any>("GET", "/user/profile")
 }
