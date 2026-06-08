@@ -46,12 +46,13 @@ app.route("/api/settlement", settlement)
 app.route("/api/withdraw", withdraw)
 app.route("/api/referrals", referral)
 app.route("/api/finance", finance)
-app.route("/api", profile)
 
 app.get("/api/admin/dashboard", async (c) => {
   const stats = await getDashboardStats()
   return c.json({ success: true, data: stats })
 })
+
+app.route("/api", profile)
 
 app.notFound((c) => c.json({ success: false, message: "Not Found" }, 404))
 app.onError((err, c) => {
