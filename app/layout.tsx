@@ -2,7 +2,8 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
-import { SiteHeader, MobileNav } from '@/components/site-nav'
+import { AppShell } from '@/components/app-shell'
+import { AuthProvider } from '@/lib/auth-context'
 import { ChainProvider } from '@/components/chain-provider'
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -44,13 +45,13 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <ThemeProvider>
-          <ChainProvider>
-            <SiteHeader />
-            <main className="min-h-screen pb-24 lg:pb-0">{children}</main>
-            <MobileNav />
-          </ChainProvider>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <ChainProvider>
+              <AppShell>{children}</AppShell>
+            </ChainProvider>
+          </ThemeProvider>
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

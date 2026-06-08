@@ -22,6 +22,8 @@ const deskLinks = [
   { href: "/leaderboard", label: "排行榜" },
   { href: "/referral", label: "邀请" },
   { href: "/portfolio", label: "我的持仓" },
+  { href: "/profile", label: "用户中心" },
+  { href: "/admin", label: "管理" },
 ]
 
 export function SiteHeader() {

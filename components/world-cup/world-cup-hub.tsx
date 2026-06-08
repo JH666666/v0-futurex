@@ -3,7 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Trophy, Goal, Flag, Radio, ArrowUpRight } from "lucide-react"
-import { markets, matches, leaders, formatUSDC } from "@/lib/data"
+import { matches, leaders, formatUSDC } from "@/lib/data"
+import { getApprovedMarkets } from "@/lib/market-store"
 import { MarketCard } from "@/components/market-card"
 import { SectionHeader } from "@/components/section-header"
 import { cn } from "@/lib/utils"
@@ -17,7 +18,7 @@ const tabs = [
 
 export function WorldCupHub() {
   const [tab, setTab] = useState("winner")
-  const wc = markets.filter((m) => m.category === "worldcup")
+  const wc = getApprovedMarkets().filter((m) => m.category === "worldcup")
   const winner = wc.filter((m) => m.question.includes("冠军") || m.question.includes("卫冕"))
   const qualify = wc.filter((m) => m.question.includes("半决赛") || m.question.includes("晋级"))
   const scorer = wc.filter((m) => m.question.includes("金靴"))

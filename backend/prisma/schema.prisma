@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MarketCategory {
+  worldcup
+  crypto
+  ai
+  politics
+  finance
+  entertainment
+}
+
+enum ChainType {
+  base
+  bsc
+}
+
+enum UserRole {
+  user
+  admin
+  finance
+  auditor
+  operator
+  super_admin
+}
+
+enum OrderSide {
+  YES
+  NO
+}
+
+model User {
+  id              String       @id @default(uuid()) @db.Uuid
+  walletAddress   String       @unique @map("wallet_address") @db.VarChar(42)
+  handle          String?      @unique @db.VarChar(30)
+  nickname        String?      @db.VarChar(50)
+  referralCode    String?      @unique @map("referral_code") @db.VarChar(20)
+  referredBy      String?      @map("referred_by") @db.Uuid
+  role            UserRole     @default(user)
+  status          String       @default("active") @db.VarChar(20)
+  balance         Decimal      @default(0) @db.Decimal(36, 18)
+  frozenBalance   Decimal      @default(0) @map("frozen_balance") @db.Decimal(36, 18)
+  totalEarned     Decimal      @default(0) @map("total_earned") @db.Decimal(36, 18)
+  totalWithdrawn  Decimal      @default(0) @map("total_withdrawn") @db.Decimal(36, 18)
+  totalDeposited  Decimal      @default(0) @map("total_deposited") @db.Decimal(36, 18)
+  level           Int          @default(1)
+  totalBetAmount  Decimal      @default(0) @map("total_bet_amount") @db.Decimal(36, 18)
+  totalInvites    Int          @default(0) @map("total_invites")
+  teamVolume      Decimal      @default(0) @map("team_volume") @db.Decimal(36, 18)
+  kycStatus       String       @default("unverified") @map("kyc_status") @db.VarChar(20)
+  kycName         String?      @map("kyc_name") @db.VarChar(100)
+  kycCountry      String?      @map("kyc_country") @db.VarChar(5)
+  kycIdNumber     String?      @map("kyc_id_number") @db.VarChar(50)
+  kycSubmittedAt  DateTime?    @map("kyc_submitted_at") @db.Timestamptz()
+  kycReviewedAt   DateTime?    @map("kyc_reviewed_at") @db.Timestamptz()
+  riskLevel       String       @default("normal") @map("risk_level") @db.VarChar(20)
+  riskReason      String?      @map("risk_reason") @db.Text
+  riskTaggedAt    DateTime?    @map("risk_tagged_at") @db.Timestamptz()
+  lastLoginAt     DateTime?    @map("last_login_at") @db.Timestamptz()
+  createdAt       DateTime     @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime     @updatedAt @map("updated_at") @db.Timestamptz()
+
+  markets         Market[]     @relation("MarketCreator")
+  orders          Order[]
+  positions       Position[]
+  settlements     Settlement[]
+  withdrawals     Withdrawal[]
+  referralsUser   Referral[]   @relation("ReferralUser")
+  referralsInviter Referral[]  @relation("ReferralInviter")
+  commissionsFrom Commission[] @relation("CommissionFrom")
+  commissionsTo   Commission[] @relation("CommissionTo")
+  activityLogs    ActivityLog[]
+
+  @@index([status])
+  @@map("users")
+}
+
+model Market {
+  id                String         @id @default(uuid()) @db.Uuid
+  question          String         @db.Text
+  description       String?        @db.Text
+  category          MarketCategory
+  chain             ChainType      @default(base)
+  yesPrice          Int            @default(50) @map("yes_price")
+  volume            Decimal        @default(0) @db.Decimal(36, 18)
+  liquidity         Decimal        @default(0) @db.Decimal(36, 18)
+  participants      Int            @default(0)
+  endDate           DateTime       @map("end_date") @db.Date
+  resolutionSource  String         @map("resolution_source") @db.Text
+  outcome           OrderSide?
+  status            String         @default("active") @db.VarChar(20)
+  featured          Boolean        @default(false)
+  featuredUntil     DateTime?      @map("featured_until") @db.Date
+  creatorId         String         @map("creator_id") @db.Uuid
+  creator           User           @relation("MarketCreator", fields: [creatorId], references: [id])
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt         DateTime       @updatedAt @map("updated_at") @db.Timestamptz()
+
+  orders            Order[]
+  positions         Position[]
+  settlement        Settlement?
+
+  @@index([category])
+  @@index([status])
+  @@map("markets")
+}
+
+model Order {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marketId        String    @map("market_id") @db.Uuid
+  market          Market    @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  userWallet      String    @map("user_wallet") @db.VarChar(42)
+  chain           ChainType @default(base)
+  token           String    @default("USDC") @db.VarChar(10)
+  side            OrderSide
+  amount          Decimal   @db.Decimal(36, 18)
+  price           Int
+  shares          Decimal   @db.Decimal(36, 18)
+  estimatedReturn Decimal   @map("estimated_return") @db.Decimal(36, 18)
+  status          String    @default("filled") @db.VarChar(20)
+  txHash          String?   @map("tx_hash") @db.VarChar(66)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  commissions     Commission[]
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([marketId])
+  @@map("orders")
+}
+
+model Position {
+  id              String    @id @default(uuid()) @db.Uuid
+  userId          String    @map("user_id") @db.Uuid
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  marketId        String    @map("market_id") @db.Uuid
+  market          Market    @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  side            OrderSide
+  totalAmount     Decimal   @default(0) @map("total_amount") @db.Decimal(36, 18)
+  avgPrice        Int       @default(0) @map("avg_price")
+  shares          Decimal   @default(0) @db.Decimal(36, 18)
+  currentPrice    Int       @default(0) @map("current_price")
+  pnl             Decimal   @default(0) @db.Decimal(36, 18)
+  status          String    @default("open") @db.VarChar(20)
+  settledOutcome  OrderSide? @map("settled_outcome")
+  settledReturn   Decimal?  @map("settled_return") @db.Decimal(36, 18)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz()
+
+  @@unique([userId, marketId, side])
+  @@index([marketId, status])
+  @@map("positions")
+}
+
+model Settlement {
+  id              String    @id @default(uuid()) @db.Uuid
+  marketId        String    @unique @map("market_id") @db.Uuid
+  market          Market    @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  outcome         OrderSide
+  totalPositions  Int       @default(0) @map("total_positions")
+  totalPayout     Decimal   @default(0) @map("total_payout") @db.Decimal(36, 18)
+  totalFrozen     Decimal   @default(0) @map("total_frozen") @db.Decimal(36, 18)
+  settledBy       String    @map("settled_by") @db.Uuid
+  settler         User      @relation(fields: [settledBy], references: [id])
+  txHash          String?   @map("tx_hash") @db.VarChar(66)
+  settledAt       DateTime  @default(now()) @map("settled_at") @db.Timestamptz()
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([marketId])
+  @@map("settlements")
+}
+
+model Withdrawal {
+  id            String    @id @default(uuid()) @db.Uuid
+  userId        String    @map("user_id") @db.Uuid
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userWallet    String    @map("user_wallet") @db.VarChar(42)
+  chain         ChainType
+  token         String    @default("USDC") @db.VarChar(10)
+  amount        Decimal   @db.Decimal(36, 18)
+  fee           Decimal   @default(2) @db.Decimal(36, 18)
+  netAmount     Decimal   @map("net_amount") @db.Decimal(36, 18)
+  toAddress     String    @map("to_address") @db.VarChar(42)
+  status        String    @default("PENDING") @db.VarChar(20)
+  isLarge       Boolean   @default(false) @map("is_large")
+  rejectReason  String?   @map("reject_reason") @db.Text
+  reviewedBy    String?   @map("reviewed_by") @db.Uuid
+  reviewedAt    DateTime? @map("reviewed_at") @db.Timestamptz()
+  txHash        String?   @map("tx_hash") @db.VarChar(66)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status])
+  @@map("withdrawals")
+}
+
+model Referral {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @unique @map("user_id") @db.Uuid
+  user       User     @relation("ReferralUser", fields: [userId], references: [id], onDelete: Cascade)
+  inviterId  String   @map("inviter_id") @db.Uuid
+  inviter    User     @relation("ReferralInviter", fields: [inviterId], references: [id], onDelete: Cascade)
+  level      Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([inviterId])
+  @@map("referrals")
+}
+
+model Commission {
+  id               String   @id @default(uuid()) @db.Uuid
+  fromUserId       String   @map("from_user_id") @db.Uuid
+  fromUser         User     @relation("CommissionFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId         String   @map("to_user_id") @db.Uuid
+  toUser           User     @relation("CommissionTo", fields: [toUserId], references: [id], onDelete: Cascade)
+  orderId          String   @map("order_id") @db.Uuid
+  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  level            Int
+  rate             Int
+  betAmount        Decimal  @map("bet_amount") @db.Decimal(36, 18)
+  commissionAmount Decimal  @map("commission_amount") @db.Decimal(36, 18)
+  marketQuestion   String   @map("market_question") @db.Text
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([toUserId, createdAt(sort: Desc)])
+  @@map("commissions")
+}
+
+model TreasuryRecord {
+  id          String    @id @default(uuid()) @db.Uuid
+  type        String    @db.VarChar(10)
+  chain       ChainType
+  token       String    @db.VarChar(10)
+  amount      Decimal   @db.Decimal(36, 18)
+  fromAddress String?   @map("from_address") @db.VarChar(42)
+  toAddress   String?   @map("to_address") @db.VarChar(42)
+  status      String    @default("pending") @db.VarChar(20)
+  txHash      String?   @map("tx_hash") @db.VarChar(66)
+  note        String?   @db.Text
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([type])
+  @@map("treasury_records")
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   @db.VarChar(20)
+  detail    String   @db.Text
+  amount    Decimal? @db.Decimal(36, 18)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("activity_logs")
+}
+
+model SystemSetting {
+  key         String    @id @db.VarChar(50)
+  value       Json      @default("{}")
+  description String?   @db.Text
+  updatedBy   String?   @map("updated_by") @db.Uuid
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz()
+
+  @@map("system_settings")
+}

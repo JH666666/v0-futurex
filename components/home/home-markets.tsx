@@ -1,9 +1,11 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { MarketCard } from "@/components/market-card"
 import { SectionHeader } from "@/components/section-header"
 import { useChain } from "@/components/chain-provider"
-import { markets, chainOrder, chainMeta, type Chain } from "@/lib/data"
+import { chainOrder, chainMeta, type Chain, formatUSDC } from "@/lib/data"
+import { getMarkets, type Market } from "@/lib/api-client"
 import { cn } from "@/lib/utils"
 
 type Filter = Chain | "all"
@@ -11,14 +13,19 @@ type Filter = Chain | "all"
 export function HomeMarkets() {
   const { filterChain, setFilterChain } = useChain()
   const filter = filterChain
+  const [pool, setPool] = useState<Market[]>([])
 
-  const pool = filter === "all" ? markets : markets.filter((m) => m.chain === filter)
+  useEffect(() => {
+    getMarkets({ status: "active" }).then((res) => setPool(res.data))
+  }, [])
 
-  const trending = [...pool].sort((a, b) => b.volume - a.volume).slice(0, 3)
-  const featured = pool.filter((m) => m.featured).slice(0, 3)
-  const endingSoon = [...pool].sort((a, b) => +new Date(a.endDate) - +new Date(b.endDate)).slice(0, 3)
-  const worldcup = pool.filter((m) => m.category === "worldcup").slice(0, 3)
-  const newMarkets = [...pool].slice(-3).reverse()
+  const chainPool = filter === "all" ? pool : pool.filter((m) => m.chain === filter)
+
+  const trending = [...chainPool].sort((a, b) => b.volume - a.volume).slice(0, 3)
+  const featured = chainPool.filter((m) => m.featured).slice(0, 3)
+  const endingSoon = [...chainPool].sort((a, b) => +new Date(a.endDate) - +new Date(b.endDate)).slice(0, 3)
+  const worldcup = chainPool.filter((m) => m.category === "worldcup").slice(0, 3)
+  const newMarkets = [...chainPool].slice(-3).reverse()
 
   const filters: { id: Filter; label: string }[] = [
     { id: "all", label: "全部网络" },

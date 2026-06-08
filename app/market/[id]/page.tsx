@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, TrendingUp, TrendingDown, Users, DollarSign, Droplets, CalendarClock, ShieldCheck } from "lucide-react"
-import { getMarket, markets, categoryLabels, formatUSDC } from "@/lib/data"
+import { getApprovedMarkets } from "@/lib/market-store"
+import { categoryLabels, formatUSDC } from "@/lib/data"
 import { ProbabilityChart } from "@/components/market/probability-chart"
 import { TradePanel } from "@/components/market/trade-panel"
 import { ActivityFeed } from "@/components/market/activity-feed"
@@ -9,12 +10,12 @@ import { ChainBadge } from "@/components/chain-badge"
 import { Comments } from "@/components/market/comments"
 
 export function generateStaticParams() {
-  return markets.map((m) => ({ id: m.id }))
+  return getApprovedMarkets().map((m) => ({ id: m.id }))
 }
 
 export default async function MarketDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const market = getMarket(id)
+  const market = getApprovedMarkets().find((m) => m.id === id)
   if (!market) notFound()
 
   const up = market.change24h >= 0
