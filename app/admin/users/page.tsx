@@ -2,15 +2,15 @@
 import { useState, useEffect } from "react"
 import { Search, Loader2 } from "lucide-react"
 import { formatUSDC } from "@/lib/data"
-import { getAdminUsers } from "@/lib/api-client"
+import { getDashboardStats } from "@/lib/api-client"
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getAdminUsers()
-      .then(res => setUsers(res.data?.users || []))
+    getDashboardStats()
+      .then((res: any) => setUsers(res.data?.users || []))
       .catch(() => setUsers([]))
       .finally(() => setLoading(false))
   }, [])
