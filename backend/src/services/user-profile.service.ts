@@ -31,7 +31,7 @@ export async function getAllUsers(query?: any) {
     return { users: list, stats: { total: mockUserProfiles.length, active: mockUserProfiles.filter((u:any)=>u.status==="active").length, kycPending: mockUserProfiles.filter((u:any)=>u.kyc.status==="PENDING").length, kycApproved: mockUserProfiles.filter((u:any)=>u.kyc.status==="APPROVED").length, highRisk: mockUserProfiles.filter((u:any)=>u.risk.level!=="normal").length } }
   }
   try { return { users: await userRepo.findAll(query), stats: { total:0,active:0,kycPending:0,kycApproved:0,highRisk:0 } } }
-  catch { return { users:[], stats:{total:0,active:0,kycPending:0,kycApproved:0,highRisk:0} } }
+  catch(e) { console.error("DB error:", (e as any).message); return { users:[], stats:{total:0,active:0,kycPending:0,kycApproved:0,highRisk:0}, error: (e as any).message } }
 }
 
 export async function reviewKyc(userId: string, status: string, reviewer: string) {
