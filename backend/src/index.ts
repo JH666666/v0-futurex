@@ -49,6 +49,18 @@ app.route("/api/finance", finance)
 
 app.get("/api/admin/dashboard", async (c) => {
   const stats = await getDashboardStats()
+  // Debug: direct query test
+  try {
+    const { prisma } = await import("./lib/db.js")
+    const rawUsers = await prisma.user.findMany()
+    console.log("Direct prisma.user.findMany:", rawUsers.length, "users")
+    stats.users = rawUsers.map((u: any) => ({
+      id: u.id, walletAddress: u.walletAddress, handle: u.handle,
+      role: u.role, balance: Number(u.balance || 0), createdAt: u.createdAt,
+    }))
+  } catch(e: any) {
+    console.error("Direct query error:", e.message)
+  }
   return c.json({ success: true, data: stats })
 })
 
