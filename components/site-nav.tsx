@@ -2,19 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Trophy, Plus, Wallet2, Crown } from "lucide-react"
+import { Home, Trophy, Plus, Wallet2, Crown, User } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { WalletConnect } from "@/components/wallet-connect"
 import { ChainSwitcher } from "@/components/chain-switcher"
 import { ThemeToggle } from "@/components/theme-toggle"
-
-const links = [
-  { href: "/", label: "首页", icon: Home },
-  { href: "/world-cup", label: "世界杯", icon: Trophy },
-  { href: "/create", label: "创建", icon: Plus },
-  { href: "/leaderboard", label: "排行榜", icon: Crown },
-  { href: "/portfolio", label: "持仓", icon: Wallet2 },
-]
+import { useAuth } from "@/lib/auth-context"
 
 const deskLinks = [
   { href: "/", label: "首页" },
@@ -23,11 +16,12 @@ const deskLinks = [
   { href: "/referral", label: "邀请" },
   { href: "/portfolio", label: "我的持仓" },
   { href: "/profile", label: "用户中心" },
-  { href: "/admin", label: "管理" },
 ]
 
 export function SiteHeader() {
   const pathname = usePathname()
+  const { isAdmin } = useAuth()
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:px-6">
@@ -46,7 +40,7 @@ export function SiteHeader() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  "rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                  "rounded-full px-3 py-2 text-sm font-medium transition-colors",
                   active ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground",
                 )}
               >
@@ -54,6 +48,17 @@ export function SiteHeader() {
               </Link>
             )
           })}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className={cn(
+                "rounded-full px-3 py-2 text-sm font-medium transition-colors",
+                pathname.startsWith("/admin") ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              管理
+            </Link>
+          )}
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
@@ -74,6 +79,14 @@ export function SiteHeader() {
 
 export function MobileNav() {
   const pathname = usePathname()
+  const links = [
+    { href: "/", label: "首页", icon: Home },
+    { href: "/world-cup", label: "世界杯", icon: Trophy },
+    { href: "/create", label: "创建", icon: Plus },
+    { href: "/portfolio", label: "持仓", icon: Wallet2 },
+    { href: "/profile", label: "我的", icon: User },
+  ]
+
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/80 backdrop-blur-xl lg:hidden">
       <div className="mx-auto grid max-w-md grid-cols-5 px-2 pb-[env(safe-area-inset-bottom)]">

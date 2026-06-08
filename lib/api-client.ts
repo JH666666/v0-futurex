@@ -15,7 +15,7 @@
 // 开发默认 http://localhost:4000/api
 // 前端无需修改代码即可切换
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api"
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://v0-futurex-production.up.railway.app/api"
 
 // Token 管理
 let _token: string | null = null
