@@ -7,6 +7,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "npm install && npx prisma generate",
     "start": "npx tsx src/index.ts",
+    "start:prod": "node dist/index.js",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev"

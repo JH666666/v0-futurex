@@ -33,7 +33,7 @@ app.use("*", logger())
 
 // ─── 健康检查 ──────────────────────────────────────────
 app.get("/api/health", (c) =>
-  c.json({ success: true, message: "FutureX API Running" })
+  c.json({ status: "ok", service: "futurex-api", mockMode: config.mockMode })
 )
 
 // ─── 路由挂载 ──────────────────────────────────────────
