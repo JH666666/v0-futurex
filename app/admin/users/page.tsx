@@ -1,22 +1,16 @@
 "use client"
 import { useState, useEffect } from "react"
-import { Search, Loader2, Shield } from "lucide-react"
+import { Search, Loader2 } from "lucide-react"
 import { formatUSDC } from "@/lib/data"
-import { cn } from "@/lib/utils"
-
-const API = "https://v0-futurex-production.up.railway.app"
+import { getAdminUsers } from "@/lib/api-client"
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem("futurex-api-token")
-    const h: any = { "Content-Type": "application/json" }
-    if (token) h["Authorization"] = `Bearer ${token}`
-    fetch(`${API}/api/admin/users`, { headers: h })
-      .then(r => r.json())
-      .then(d => setUsers(d.data?.users || []))
+    getAdminUsers()
+      .then(res => setUsers(res.data?.users || []))
       .catch(() => setUsers([]))
       .finally(() => setLoading(false))
   }, [])

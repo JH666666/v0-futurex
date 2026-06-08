@@ -218,6 +218,17 @@ export async function getDashboardStats() {
   return request<any>("GET", "/admin/dashboard")
 }
 
+export async function getAdminUsers(params?: { search?: string; status?: string }) {
+  const qs = new URLSearchParams()
+  if (params?.search) qs.set("search", params.search)
+  if (params?.status) qs.set("status", params.status)
+  return request<any>("GET", `/admin/users${qs.toString() ? "?" + qs.toString() : ""}`)
+}
+
+export async function getAllOrdersFromAPI() {
+  return request<any>("GET", "/admin/dashboard") // orders stats from dashboard
+}
+
 export async function getUserFullProfile() {
   return request<any>("GET", "/user/profile")
 }
