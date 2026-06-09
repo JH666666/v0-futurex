@@ -1,6 +1,7 @@
 import { MOCK_MODE } from "../lib/config.js"
 import { mockOrders, mockPositions, mockUsers } from "../lib/mock-data.js"
 import { orderRepo } from "../repositories/order.repository.js"
+import { calculateCommission } from "./referral-api.service.js"
 
 export function createOrder(data: any) {
   if (MOCK_MODE) {
@@ -23,9 +24,12 @@ export function createOrder(data: any) {
   }
   // Real mode
   const shares = (data.amount * 100) / data.price
-  return orderRepo.create({ ...data, chain: data.chain||"base", token: data.chain==="bsc"?"USDT":"USDC", userWallet: "", txHash: "", shares, estimatedReturn: shares }).then((o: any) => {
+  try {
+    const o = await orderRepo.create({ ...data, chain: data.chain||"base", token: data.chain==="bsc"?"USDT":"USDC", userWallet: "", txHash: "", shares, estimatedReturn: shares })
+    // Trigger 5-level commission
+    calculateCommission({ betUserId: data.userId, betAmount: data.amount, marketQuestion: "", orderId: o.id }).catch(() => {})
     return { order: o, wallet: { balance: 0, frozenBalance: 0 } }
-  }).catch(() => ({ error: "数据库错误" }))
+  } catch { return { error: "数据库错误" } }
 }
 
 export function getUserOrders(userId: string) {

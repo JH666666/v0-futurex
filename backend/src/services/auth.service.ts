@@ -1,6 +1,7 @@
 import { MOCK_MODE } from "../lib/config.js"
 import { mockUsers } from "../lib/mock-data.js"
 import { userRepo } from "../repositories/user.repository.js"
+import { generateInviteCode, processReferral } from "./referral-api.service.js"
 
 const nonceStore = new Map<string,{nonce:string;expires:number}>()
 
@@ -30,7 +31,16 @@ export async function verifySignature(walletAddress: string, signature: string, 
   // Real mode
   let user = await userRepo.findByWallet(walletAddress)
   if (!user) {
-    user = await userRepo.create({ walletAddress, handle: `${walletAddress.slice(2,10)}.base`, referralCode: `FX-${walletAddress.slice(2,8).toUpperCase()}` })
+    const code = await generateInviteCode(walletAddress)
+    user = await userRepo.create({ walletAddress, handle: `${walletAddress.slice(2,10)}.base`, referralCode: code })
+    // Process invite code if provided
+    try {
+      const inviteCode = nonceStore.get(walletAddress + "_invite")
+      if (inviteCode) {
+        await processReferral(user.id, walletAddress, inviteCode.nonce)
+        nonceStore.delete(walletAddress + "_invite")
+      }
+    } catch {}
   }
   return { token: `jwt_real_${user.id}_${Date.now()}`, user }
 }

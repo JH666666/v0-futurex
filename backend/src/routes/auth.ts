@@ -7,7 +7,7 @@ const auth = new Hono()
 // POST /api/auth/wallet
 auth.post("/wallet", async (c) => {
   const body = await c.req.json()
-  const schema = z.object({ walletAddress: z.string().min(42).max(42) })
+  const schema = z.object({ walletAddress: z.string().min(42).max(42), inviteCode: z.string().optional() })
   const parsed = schema.safeParse(body)
   if (!parsed.success)
     return c.json({ success: false, message: "钱包地址格式错误（需要 42 位 0x 地址）" }, 400)

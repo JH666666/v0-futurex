@@ -25,6 +25,7 @@ import { withdraw } from "./routes/withdraw.js"
 import { referral } from "./routes/referral.js"
 import { finance } from "./routes/finance.js"
 import { profile } from "./routes/profile.js"
+import { referralApi } from "./routes/referral-api.js"
 import { getDashboardStats } from "./services/dashboard.service.js"
 
 const app = new Hono()
@@ -45,6 +46,7 @@ app.route("/api/orders", order)
 app.route("/api/settlement", settlement)
 app.route("/api/withdraw", withdraw)
 app.route("/api/referrals", referral)
+app.route("/api/referral", referralApi)
 app.route("/api/finance", finance)
 
 app.get("/api/admin/dashboard", async (c) => {
