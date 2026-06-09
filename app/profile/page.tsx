@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { User, Award, TrendingUp, Users, Clock, Shield, Copy, Check, Zap } from "lucide-react"
+import { User, Award, TrendingUp, Users, Clock, Copy, Check, Zap, Gift, UserPlus } from "lucide-react"
 import { getUserFullProfile, getUserActivities, getLevelConfig } from "@/lib/api-client"
 import { formatUSDC } from "@/lib/data"
 import { cn } from "@/lib/utils"
@@ -123,6 +123,28 @@ export default function ProfilePage() {
             {t === "overview" ? "基本资料" : "行为日志"}
           </button>
         ))}
+      </div>
+
+      {/* Team / Referral Stats */}
+      <div className="rounded-2xl glass p-5">
+        <h2 className="mb-3 flex items-center gap-2 font-bold"><UserPlus className="size-5 text-primary" />我的团队</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            { label: "邀请码", value: profile.referralCode, icon: Gift },
+            { label: "邀请人数", value: profile.totalInvites || 0, icon: Users },
+            { label: "团队业绩", value: formatUSDC(profile.teamVolume || 0), icon: TrendingUp },
+            { label: "累计返佣", value: formatUSDC(profile.totalEarned || 0), icon: Award, color: "text-yes" },
+          ].map(s => {
+            const I = s.icon
+            return (
+              <div key={s.label} className="flex flex-col gap-1.5 rounded-xl bg-secondary/40 p-3">
+                <I className={cn("size-4", s.color || "text-primary")} />
+                <p className="num text-lg font-bold">{s.value}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
+              </div>
+            )
+          })}
+        </div>
       </div>
 
       {tab === "overview" && (

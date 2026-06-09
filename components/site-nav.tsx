@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Trophy, Plus, Wallet2, Crown, User } from "lucide-react"
+import { Home, Trophy, Plus, Wallet2, User, Gift } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { WalletConnect } from "@/components/wallet-connect"
 import { ChainSwitcher } from "@/components/chain-switcher"
@@ -13,7 +13,7 @@ const deskLinks = [
   { href: "/", label: "首页" },
   { href: "/world-cup", label: "世界杯中心" },
   { href: "/leaderboard", label: "排行榜" },
-  { href: "/referral", label: "邀请" },
+  { href: "/invite", label: "邀请" },
   { href: "/portfolio", label: "我的持仓" },
   { href: "/profile", label: "用户中心" },
 ]
@@ -81,7 +81,7 @@ export function MobileNav() {
   const pathname = usePathname()
   const links = [
     { href: "/", label: "首页", icon: Home },
-    { href: "/world-cup", label: "世界杯", icon: Trophy },
+    { href: "/invite", label: "邀请", icon: Gift },
     { href: "/create", label: "创建", icon: Plus },
     { href: "/portfolio", label: "持仓", icon: Wallet2 },
     { href: "/profile", label: "我的", icon: User },
