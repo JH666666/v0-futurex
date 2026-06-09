@@ -221,8 +221,8 @@ model Commission {
   fromUser         User     @relation("CommissionFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
   toUserId         String   @map("to_user_id") @db.Uuid
   toUser           User     @relation("CommissionTo", fields: [toUserId], references: [id], onDelete: Cascade)
-  orderId          String   @map("order_id") @db.Uuid
-  order            Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId          String?  @map("order_id") @db.Uuid
+  order            Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
   level            Int
   rate             Int
   betAmount        Decimal  @map("bet_amount") @db.Decimal(36, 18)

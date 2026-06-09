@@ -54,7 +54,7 @@ async function main() {
     await prisma.commission.create({
       data: {
         fromUserId: baseUser.id, toUserId: toUser.id,
-        orderId: "seed-order-001", level,
+        orderId: "00000000-0000-0000-0000-000000000001", level,
         rate: [30, 20, 10, 5, 5][level - 1],
         betAmount: 100, commissionAmount: 100 * 0.025 * [30, 20, 10, 5, 5][level - 1] / 100,
         marketQuestion: "种子测试数据",
