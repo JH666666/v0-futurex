@@ -1,90 +1,64 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react"
-import { getNonce, login, setToken, getToken } from "@/lib/api-client"
+import { useAccount, useConnect, useDisconnect, useSignMessage } from "wagmi"
+import { getNonce, login, setToken } from "@/lib/api-client"
 
-// ─── Mock 钱包 ──────────────────────────────────────────
-export const MOCK_WALLETS = [
-  { address: "0x7a3F9C21Ab1234DeF5678901234567890ABCDEF0", label: "vitalik.base (管理员)", role: "admin" },
-  { address: "0x2b8D4F12Bb5678CDe9012345678901234ABCDEF02", label: "king.base (用户)", role: "user" },
-  { address: "0x9c1A7E33Cc9012DEf345678901234567890ABCDEF03", label: "whale.base (用户)", role: "user" },
-]
-
-type AuthUser = {
-  walletAddress: string; handle: string; role: string; balance: number
-  level?: number; nickname?: string
-}
-
+type AuthUser = { walletAddress: string; handle: string; role: string; balance: number; level?: number }
 type AuthContextType = {
-  user: AuthUser | null
-  token: string | null
-  loading: boolean
-  isAdmin: boolean
-  connectMock: (wallet: typeof MOCK_WALLETS[0]) => Promise<void>
-  disconnect: () => void
-  getAuthHeaders: () => Record<string, string>
+  user: AuthUser | null; token: string | null; loading: boolean; isAdmin: boolean
+  connectWallet: () => void; disconnect: () => void
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const { address, isConnected } = useAccount()
+  const { connect, connectors } = useConnect()
+  const { disconnect: wagmiDisconnect } = useDisconnect()
+  const { signMessageAsync } = useSignMessage()
   const [user, setUser] = useState<AuthUser | null>(null)
   const [token, setTokenState] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // 启动时检查 token
+  // Auto-login when wallet connects
   useEffect(() => {
-    const saved = getToken()
-    if (saved) {
+    const saved = localStorage.getItem("futurex-api-token")
+    if (saved && isConnected && address) {
       setTokenState(saved)
-      // 从 token 解析用户信息
-      try {
-        const parts = saved.split("_")
-        if (parts[0] === "jwt" && parts[1] === "mock") {
-          const wallet = MOCK_WALLETS.find((w) => w.address.toLowerCase() === saved.split("_mock_")[1]?.toLowerCase())
-          if (wallet) {
-            setUser({ walletAddress: wallet.address, handle: wallet.label.split(" ")[0], role: wallet.role, balance: 5000 })
-          }
-        }
-      } catch {}
+      setUser({ walletAddress: address, handle: `${address.slice(2,10)}.base`, role: "user", balance: 5000, level: 1 })
+      setLoading(false)
+      return
     }
-    setLoading(false)
-  }, [])
+    if (!isConnected) { setUser(null); setTokenState(null); setLoading(false); return }
+    // SIWE: Sign-In With Ethereum
+    if (address) {
+      getNonce(address).then(async (res) => {
+        try {
+          const sig = await signMessageAsync({ message: res.data.message })
+          const loginRes = await login(address, sig, res.data.nonce)
+          setToken(loginRes.token)
+          setTokenState(loginRes.token)
+          setUser({ walletAddress: address, handle: `${address.slice(2,10)}.base`, role: loginRes.user?.role || "user", balance: loginRes.user?.balance || 5000, level: loginRes.user?.level || 1 })
+        } catch { setUser({ walletAddress: address, handle: `${address.slice(2,10)}.base`, role: "user", balance: 5000, level: 1 }) }
+      }).catch(() => setUser({ walletAddress: address, handle: `${address.slice(2,10)}.base`, role: "user", balance: 5000, level: 1 }))
+      .finally(() => setLoading(false))
+    }
+  }, [address, isConnected])
 
-  const connectMock = useCallback(async (wallet: typeof MOCK_WALLETS[0]) => {
-    try {
-      const nonceRes = await getNonce(wallet.address)
-      const loginRes = await login(wallet.address, `mock_signature_${Date.now()}`, nonceRes.data.nonce)
-      setTokenState(loginRes.token)
-      setUser({
-        walletAddress: wallet.address,
-        handle: wallet.label.split(" ")[0],
-        role: wallet.role,
-        balance: loginRes.user?.balance || 5000,
-        level: loginRes.user?.level || 1,
-        nickname: loginRes.user?.nickname || wallet.label.split(" ")[0],
-      })
-    } catch (e) {
-      console.error("Mock login failed:", e)
-    }
-  }, [])
+  const connectWallet = useCallback(() => {
+    if (connectors[0]) connect({ connector: connectors[0] })
+  }, [connectors, connect])
 
   const disconnect = useCallback(() => {
+    wagmiDisconnect()
     setToken(null)
     setUser(null)
     setTokenState(null)
-  }, [])
-
-  const getAuthHeaders = useCallback(() => {
-    return token ? { Authorization: `Bearer ${token}` } : {}
-  }, [token])
+  }, [wagmiDisconnect])
 
   return (
-    <AuthContext.Provider value={{
-      user, token, loading,
-      isAdmin: user?.role === "admin" || user?.role === "super_admin",
-      connectMock, disconnect, getAuthHeaders,
-    }}>
+    <AuthContext.Provider value={{ user, token, loading, isAdmin: user?.role === "admin", connectWallet, disconnect }}>
       {children}
     </AuthContext.Provider>
   )
@@ -92,6 +66,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider")
+  if (!ctx) throw new Error("useAuth must be within AuthProvider")
   return ctx
 }

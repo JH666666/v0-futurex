@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import { AppShell } from '@/components/app-shell'
 import { AuthProvider } from '@/lib/auth-context'
+import { Web3Provider } from '@/lib/web3-provider'
 import { ChainProvider } from '@/components/chain-provider'
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -45,13 +46,15 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased">
-        <AuthProvider>
-          <ThemeProvider>
-            <ChainProvider>
-              <AppShell>{children}</AppShell>
-            </ChainProvider>
-          </ThemeProvider>
-        </AuthProvider>
+        <Web3Provider>
+          <AuthProvider>
+            <ThemeProvider>
+              <ChainProvider>
+                <AppShell>{children}</AppShell>
+              </ChainProvider>
+            </ThemeProvider>
+          </AuthProvider>
+        </Web3Provider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
