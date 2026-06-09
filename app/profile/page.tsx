@@ -1,12 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { User, Award, TrendingUp, Users, Clock, Copy, Check, Zap, Gift, UserPlus } from "lucide-react"
+import Link from "next/link"
+import { Award, TrendingUp, Users, Clock, Copy, Check, Zap, Gift, UserPlus, Wallet } from "lucide-react"
 import { getUserFullProfile, getUserActivities, getLevelConfig } from "@/lib/api-client"
+import { useAuth } from "@/lib/auth-context"
 import { formatUSDC } from "@/lib/data"
 import { cn } from "@/lib/utils"
 
 export default function ProfilePage() {
+  const { user, connectMock, loading: authLoading } = useAuth()
   const [profile, setProfile] = useState<any>(null)
   const [logs, setLogs] = useState<any[]>([])
   const [levels, setLevels] = useState<any[]>([])
@@ -15,27 +18,37 @@ export default function ProfilePage() {
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
+    if (!user) { setLoading(false); return }
     Promise.all([
       getUserFullProfile(),
       getUserActivities(),
       getLevelConfig(),
     ]).then(([p, a, l]) => {
-      setProfile(p.data)
-      setLogs(a.data.logs)
-      setLevels(l.data)
+      setProfile(p.data || { ...user, referralCode: user.walletAddress?.slice(2,10).toUpperCase(), totalInvites: 0, teamVolume: 0, totalEarned: 0 })
+      setLogs(a.data?.logs || [])
+      setLevels(l.data || [])
       setLoading(false)
     }).catch(() => setLoading(false))
-  }, [])
+  }, [user])
 
   function copyCode() {
-    if (profile) {
-      navigator.clipboard?.writeText(`https://futurex.xyz/r/${profile.referralCode}`)
-      setCopied(true); setTimeout(() => setCopied(false), 1800)
-    }
+    const code = profile?.referralCode || user?.walletAddress?.slice(2,10).toUpperCase()
+    navigator.clipboard?.writeText(`https://futurex.vercel.app/invite?code=${code}`)
+    setCopied(true); setTimeout(() => setCopied(false), 1800)
   }
 
-  if (loading) return <div className="flex justify-center py-20"><div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
-  if (!profile) return <div className="p-10 text-center text-muted-foreground">请先登录</div>
+  if (authLoading || loading) return <div className="flex justify-center py-20"><div className="size-6 animate-spin rounded-full border-2 border-primary border-t-transparent" /></div>
+
+  if (!user) return (
+    <div className="mx-auto flex max-w-lg flex-col items-center gap-6 px-4 py-20 text-center">
+      <Wallet className="size-16 text-muted-foreground" />
+      <h2 className="text-xl font-bold">请连接钱包</h2>
+      <p className="text-sm text-muted-foreground">FutureX 使用 Web3 钱包身份，连接钱包后自动显示你的个人资料</p>
+      <Link href="/connect" className="inline-flex h-12 items-center gap-2 rounded-full bg-primary px-8 text-sm font-semibold text-primary-foreground">
+        <Wallet className="size-4" />连接钱包
+      </Link>
+    </div>
+  )
 
   const levelInfo = levels.find((l: any) => l.level === profile.level)
 
