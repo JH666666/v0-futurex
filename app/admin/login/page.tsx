@@ -1,13 +1,14 @@
 "use client"
 
 import { useAccount } from "wagmi"
+import { useConnectModal } from "@rainbow-me/rainbowkit"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
 import { Shield, Wallet } from "lucide-react"
-import { ConnectButton } from "@rainbow-me/rainbowkit"
 
 export default function AdminLoginPage() {
   const { isConnected } = useAccount()
+  const { openConnectModal } = useConnectModal()
   const { user, isAdmin } = useAuth()
   const router = useRouter()
 
@@ -22,10 +23,14 @@ export default function AdminLoginPage() {
       {isConnected ? (
         <div className="flex flex-col items-center gap-3 rounded-2xl glass p-6">
           <p className="text-sm text-no">当前钱包无管理员权限</p>
-          <p className="text-xs text-muted-foreground">请切换为管理员钱包后刷新页面</p>
         </div>
       ) : (
-        <ConnectButton />
+        <button
+          onClick={openConnectModal}
+          className="inline-flex h-12 items-center gap-2 rounded-full bg-primary px-8 text-sm font-semibold text-primary-foreground"
+        >
+          <Wallet className="size-4" />连接钱包
+        </button>
       )}
     </div>
   )
