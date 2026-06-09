@@ -2,17 +2,18 @@
 
 import { WagmiProvider, createConfig, http } from "wagmi"
 import { base, bsc } from "wagmi/chains"
-import { injected, walletConnect, coinbaseWallet } from "wagmi/connectors"
+import { injected, coinbaseWallet } from "wagmi/connectors"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { RainbowKitProvider, getDefaultConfig, darkTheme } from "@rainbow-me/rainbowkit"
+import { RainbowKitProvider, darkTheme, getDefaultConfig } from "@rainbow-me/rainbowkit"
 import "@rainbow-me/rainbowkit/styles.css"
+
+const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "00000000000000000000000000000000"
 
 const config = getDefaultConfig({
   appName: "FutureX",
-  projectId: "futurex-v1",
+  projectId,
   chains: [base, bsc],
   transports: { [base.id]: http(), [bsc.id]: http() },
-  connectors: [injected(), walletConnect({ projectId: "futurex-v1" }), coinbaseWallet({ appName: "FutureX" })],
   ssr: true,
 })
 
@@ -22,7 +23,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={darkTheme()}>
+        <RainbowKitProvider theme={darkTheme()} modalSize="compact">
           {children}
         </RainbowKitProvider>
       </QueryClientProvider>
